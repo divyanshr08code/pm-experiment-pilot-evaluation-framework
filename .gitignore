@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# Generated: run `bash run_all.sh` to rebuild. Data and outputs are not committed,
+# except the finished deliverables un-ignored below.
+data/
+outputs/*
+!outputs/report.html
+!outputs/pilot_tracker.xlsx
+!outputs/figures/
