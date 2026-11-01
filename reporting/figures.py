@@ -131,7 +131,7 @@ def peeking():
     fig, ax = plt.subplots(figsize=(10, 4))
     ax.plot(d.day, 100 * d.cumulative_fpr, color=BLUE, marker="o", ms=4, label="Stop at first p < 0.05")
     ax.axhline(5, color=MUTED, lw=1, ls="--")
-    ax.text(1, 5.5, "Promised false-positive rate, 5%", color=MUTED, fontsize=9)
+    ax.text(8, 5.5, "Promised false-positive rate, 5%", color=MUTED, fontsize=9)
     last = d.iloc[-1]
     ax.text(last.day - 0.1, 100 * last.cumulative_fpr + 1, f"{100 * last.cumulative_fpr:.1f}% by day 14", ha="right", fontsize=9, color=MUTED)
     ax.set_ylim(0)
