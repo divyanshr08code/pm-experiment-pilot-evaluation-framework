@@ -1,7 +1,6 @@
 """Every planted number in the simulator lives here, so it can be read in one place.
 
-All of these are assumptions for a simulation study. docs/SIMULATOR_SPEC.md gives a
-one-line rationale for each. None of them is measured from a real company.
+All of these are assumptions for a simulation study. None of them is measured from a real company.
 """
 from dataclasses import dataclass, replace
 

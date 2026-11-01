@@ -49,7 +49,7 @@ def test_the_trap_really_catches_a_violation(tmp_path):
 
 def test_pilot_analysis_runs_without_opening_truth():
     if not (ROOT / "outputs" / "tables" / "store_week_panel.csv").exists():
-        pytest.skip("run bash run_all.sh first")
+        pytest.skip("generate the outputs first")
     result = run_trapped("import analysis.run_pilot as m; m.main()")
     assert result.returncode == 0, result.stderr[-800:]
 

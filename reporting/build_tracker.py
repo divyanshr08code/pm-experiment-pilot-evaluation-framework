@@ -68,7 +68,7 @@ def build(path=ROOT / "outputs" / "pilot_tracker.xlsx"):
 
     # ---------- Rubric ----------
     ws = wb.create_sheet("Rubric")
-    ws["A1"] = "Pre-registered thresholds (docs/PREREGISTRATION.md). " + SIM_NOTE
+    ws["A1"] = "Pre-registered thresholds. " + SIM_NOTE
     ws["A1"].font = Font(bold=True)
     header(ws, 2, ["Item", "Value", "Meaning"])
     rows = [("Minimum worthwhile effect (minutes)", 0.5, "Assumed break-even for the extra packing labour"),

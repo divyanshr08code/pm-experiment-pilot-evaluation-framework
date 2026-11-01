@@ -24,21 +24,9 @@ Bias in minutes, then 95% interval coverage. Planted effect -1.2 min (0 in S4).
 
 ![Heat-map of bias and coverage by method and scenario. Simulated data.](outputs/figures/methods_by_scenarios_heatmap.png)
 
-## Reproduce with one command
+## Reproducibility
 
-```bash
-python -m venv .venv
-```
-
-```bash
-.venv/Scripts/python -m pip install -r requirements.txt
-```
-
-```bash
-bash run_all.sh
-```
-
-On macOS or Linux use `.venv/bin/python` in the second command. The build takes about 3 minutes, wipes all generated files, regenerates everything and runs the tests. Generated data are not committed. Read [`outputs/report.html`](outputs/report.html) for the full report.
+The build script and dependency list are kept outside this repository, so it cannot be rebuilt from a fresh clone as published. The full report is at [`outputs/report.html`](outputs/report.html).
 
 ## Where things are
 
@@ -49,9 +37,6 @@ On macOS or Linux use `.venv/bin/python` in the second command. The build takes 
 | `analysis/` | Estimators; reads observed data only (enforced by `tests/test_firewall.py`) |
 | `validate/` | The only code that sees the truth; replications and cross-checks |
 | `outputs/pilot_tracker.xlsx` | Live-formula tracking workbook |
-| `docs/READOUT_MEMO.md` | One-page recommendation |
-| `docs/PREREGISTRATION.md` | Committed before any data existed |
-| `docs/LEARN.md` | Full explanation from scratch |
 
 ## Limitations
 

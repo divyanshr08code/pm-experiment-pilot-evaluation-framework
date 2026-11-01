@@ -2,7 +2,7 @@
 __pycache__/
 *.pyc
 .pytest_cache/
-# Generated: run `bash run_all.sh` to rebuild. Data and outputs are not committed,
+# Generated files. Data and outputs are not committed,
 # except the finished deliverables un-ignored below.
 data/
 outputs/*

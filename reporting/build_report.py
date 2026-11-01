@@ -102,7 +102,7 @@ of no-effect runs, against {v['val_s4_did_signif']:.1f}% for DiD.</p>
 <p>Under no true effect, stopping at the first daily p &lt; 0.05 falsely declares a win in {v['peek_daily_fpr']:.1f}% of tests, against {v['peek_fixed_fpr']:.1f}% with one fixed-horizon test.</p>
 {image('cuped_variance', 'CUPED variance reduction by metric and covariate')}
 
-<footer>{FOOTER} Every number traces to docs/RESULTS.md. Rebuild with <code>bash run_all.sh</code>.</footer>
+<footer>{FOOTER} Every number traces to docs/RESULTS.md.</footer>
 </main></body></html>"""
     (ROOT / "outputs" / "report.html").write_text(page, encoding="utf-8")
     print("Wrote outputs/report.html")

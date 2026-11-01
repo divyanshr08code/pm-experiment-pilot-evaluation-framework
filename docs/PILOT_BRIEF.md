@@ -16,7 +16,7 @@ Stores, people and costs are invented.
 | **Minimum detectable effect** | 0.735 min at planning (5% two-sided, 80% power, 15 stores per arm, 10 pre and 9 post weeks) |
 | **Minimum worthwhile effect** | 0.5 min (assumed break-even for packing labour; **confirm with finance before a real run**) |
 | **Duration** | 10-week baseline, go-live at week 11, 1-week ramp, 9 weeks of measurement |
-| **Decision rubric** | `docs/PREREGISTRATION.md`, tracker tab `Rubric` |
+| **Decision rubric** | Tracker tab `Rubric` |
 
 ## Data required
 

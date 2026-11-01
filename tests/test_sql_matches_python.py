@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TABLES = ROOT / "outputs" / "tables"
 OBS = ROOT / "data" / "observed"
 
-pytestmark = pytest.mark.skipif(not (TABLES / "store_week_panel.csv").exists(), reason="run bash run_all.sh first")
+pytestmark = pytest.mark.skipif(not (TABLES / "store_week_panel.csv").exists(), reason="generate the outputs first")
 
 
 def test_sql_panel_matches_pandas():

@@ -4,7 +4,7 @@ All data in this project are simulated. Each entry: what, why, alternatives cons
 
 | # | Decision | Why | Alternatives considered |
 |---|---|---|---|
-| 1 | `bash run_all.sh` instead of `make all` | `make` is not installed on this Windows machine; bash ships with git | Installing make: an extra step for anyone reproducing |
+| 1 | A bash build script instead of `make all` | `make` is not installed on this Windows machine; bash ships with git | Installing make: an extra step for anyone reproducing |
 | 2 | Project virtual environment `.venv`, versions pinned | No packages were installed globally; keeps the build reproducible | Global install |
 | 3 | Week 11 excluded as a washout | The effect is still ramping, so including it would blur the post period | Include it and estimate a smaller average effect |
 | 4 | Planted truth is the steady-state effect, -1.2 min | Matches the windows above, so "bias" has one clear meaning | Time-weighted average including the ramp |
