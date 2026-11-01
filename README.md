@@ -2,7 +2,7 @@
 
 **All data in this project are simulated. No number here is an observed result from a real business.** Operational pilots run per store, muddied by rain, festivals and hand-picked stores, and real data never reveals the true effect. So this simulator plants a known effect and known traps in a 30-store, 20-week dark-store pilot and a 100,000-user A/B test, then scores whether each evaluation method recovers the truth. It ends with a pre-registered scale / iterate / kill decision, a tracker, and a rollout and stop-loss plan.
 
-Built 2026-11-01. Stack: Python, DuckDB SQL, statsmodels, openpyxl.
+Author: Divyansh Rungta. Built 2026-11-01. Stack: Python, DuckDB SQL, statsmodels, openpyxl.
 
 ## Key findings (simulated; every number is in [`docs/RESULTS.md`](docs/RESULTS.md))
 
@@ -46,3 +46,11 @@ The build script and dependency list are kept outside this repository, so it can
 - The 0.5-minute minimum worthwhile effect is an assumed break-even, not a measured cost, and it decides the outcome.
 - Anomaly flags are weak on precision: only 7.0% of "unexplained" flags were real planted incidents. A streak rule did not fix it (31.6% precision, 25.0% recall).
 - The tracker's formulas were recalculated by an independent library, but the file has not been opened in Excel or Google Sheets.
+
+## Going deeper
+
+[Pilot brief](docs/PILOT_BRIEF.md) · [Pilot run SOP](docs/SOP_PILOT_RUN.md) · [Decisions](docs/DECISIONS.md) · [Metrics](docs/METRICS.md) · [Tracker guide](docs/TRACKER_GUIDE.md)
+
+## License
+
+Code is released under the [MIT License](LICENSE).
