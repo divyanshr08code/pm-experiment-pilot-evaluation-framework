@@ -1,6 +1,6 @@
 """Build outputs/pilot_tracker.xlsx: inputs are values, everything derived is a live formula.
 
-Only widely supported functions are used (IF, AND, AVERAGEIF, SUM, ABS, COUNTIF), so the file works
+Only widely supported functions are used (IF, OR, AVERAGEIF, COUNTIF), so the file works
 in both Excel and Google Sheets. Run: python -m reporting.build_tracker
 """
 import json
