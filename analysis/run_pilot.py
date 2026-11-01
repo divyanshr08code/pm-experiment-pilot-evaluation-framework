@@ -97,10 +97,13 @@ def main():
     reg.record("cross_section_mde", pw.cross_section_mde(sd, 15, m, icc), "MDE of a treated-vs-control comparison, 15 per arm", "min")
     reg.record("naive_iid_mde", pw.Z_POWER * sd * np.sqrt(2 / (15 * m)), "MDE if store-days were wrongly treated as independent", "min")
 
-    sd_week, rho = pw.ar1_from_placebo(s1, METRIC)
+    placebo_sd = pw.placebo_change_sd(s1, METRIC)
+    step_sd = pw.week_step_sd(s1, METRIC)
+    sd_week, rho = pw.calibrate_ar1(placebo_sd, step_sd)
     sd_d = pw.did_sd_per_store(sd_week, rho, 10, 9)
-    reg.record("weekly_resid_sd", sd_week, "Weekly residual SD, S1 pre-period", "min")
-    reg.record("weekly_resid_rho", rho, "Lag-1 correlation of weekly residuals, S1 pre-period", "")
+    reg.record("placebo_sd", placebo_sd, "SD across stores of a fake pilot's change (weeks 6-10 vs 1-5), S1", "min")
+    reg.record("weekly_resid_sd", sd_week, "Calibrated SD of weekly store swings, S1 pre-period", "min")
+    reg.record("weekly_resid_rho", rho, "Calibrated week-to-week persistence, S1 pre-period", "")
     reg.record("sd_d_estimated", sd_d, "Estimated SD of one store's post-pre change", "min")
     reg.record("did_mde_measured", pw.did_mde(sd_d, 15), "Measured DiD MDE, 15 stores per arm, 10 pre + 9 post weeks", "min")
     reg.record("stores_needed_mwe", pw.stores_needed(sd_d, 0.5), "Stores per arm so the MDE reaches 0.5 min", "stores")
@@ -116,7 +119,7 @@ def main():
     print(pd.DataFrame(rows).round(3).to_string())
     for x in reg.items:
         if x["id"] in ("s1_decision", "s2_decision", "s3_decision", "s4_decision", "s1_perm_p", "icc", "design_effect", "s1_day_se_ratio",
-                       "weekly_resid_rho", "did_mde_measured", "stores_needed_mwe", "s1_pretrend_p", "s2_pretrend_p", "s3_pretrend_p", "s4_pretrend_p", "s1_idle", "s1_refund", "s1_defect"):
+                       "weekly_resid_rho", "did_mde_measured", "stores_needed_mwe", "placebo_sd","weekly_resid_sd","sd_d_estimated","s1_pretrend_p", "s2_pretrend_p", "s3_pretrend_p", "s4_pretrend_p", "s1_idle", "s1_refund", "s1_defect"):
             print(x["id"], x["value"])
 
 

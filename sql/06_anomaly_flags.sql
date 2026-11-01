@@ -62,3 +62,20 @@ SELECT
 FROM anomaly_city_day
 WHERE ABS(z_score) > 3
 ORDER BY scenario, date, city;
+
+-- EXPLORATORY (not pre-registered, added after seeing poor precision): single-day z flags are mostly
+-- false alarms. A real local incident tends to last, so keep unexplained flags only when the day
+-- before or after was also flagged in the same direction at the same store.
+CREATE OR REPLACE VIEW anomaly_incident_candidates AS
+WITH scored AS (
+    SELECT scenario, store_id, date, is_rain, is_festival, z_score,
+        LAG(z_score) OVER (PARTITION BY scenario, store_id ORDER BY date) AS z_yesterday,
+        LEAD(z_score) OVER (PARTITION BY scenario, store_id ORDER BY date) AS z_tomorrow
+    FROM anomaly_store_day
+)
+SELECT scenario, store_id, date, ROUND(z_score, 2) AS z_score
+FROM scored
+WHERE ABS(z_score) > 3
+  AND is_rain = 0 AND is_festival = 0
+  AND (z_yesterday * z_score > 9 OR z_tomorrow * z_score > 9)
+ORDER BY scenario, date, store_id;

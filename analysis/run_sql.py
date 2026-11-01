@@ -10,7 +10,7 @@ from analysis.common import ROOT, TABLES, Register
 
 EXPORTS = ["store_week_panel", "store_day_export", "weekly_scorecard", "weekly_scorecard_inputs", "dq_summary",
            "balance_pre_period", "balance_city", "rank_worst_stores", "ab_srm_check", "anomaly_flags",
-           "anomaly_city_flags"]
+           "anomaly_city_flags", "anomaly_incident_candidates"]
 
 
 def build_connection():

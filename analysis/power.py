@@ -36,22 +36,35 @@ def cross_section_mde(sd: float, stores_per_arm: int, m: float, icc: float) -> f
     return Z_POWER * sd * np.sqrt(2 / (stores_per_arm * m)) * np.sqrt(design_effect(m, icc))
 
 
-def weekly_residuals(panel: pd.DataFrame, metric: str) -> pd.DataFrame:
-    """Store x week table with store and week averages removed (pre-period only)."""
+def placebo_change_sd(panel: pd.DataFrame, metric: str) -> float:
+    """Run a fake pilot inside the pre-period: each store's mean in weeks 6-10 minus its mean in
+    weeks 1-5. Nothing was launched, so the spread across stores is pure background wobble."""
     wide = panel[panel.week <= 10].pivot(index="store_id", columns="week", values=metric)
-    return wide.sub(wide.mean(axis=1), axis=0).sub(wide.mean(axis=0), axis=1).add(wide.values.mean())
+    change = wide.loc[:, 6:10].mean(axis=1) - wide.loc[:, 1:5].mean(axis=1)
+    return float(change.std(ddof=1))
 
 
-def ar1_from_placebo(panel: pd.DataFrame, metric: str):
-    """Estimate how much weekly store swings persist, from pre-period data only.
-    Returns (residual SD, lag-1 correlation). Demeaning over just 10 weeks biases rho downwards,
-    so reported MDEs are checked against the empirical spread in validate/."""
-    r = weekly_residuals(panel, metric).to_numpy()
-    k, t = r.shape
-    # Divide by the residual degrees of freedom, not the cell count, since two sets of means were removed.
-    var = (r**2).sum() / ((k - 1) * (t - 1))
-    rho = (r[:, 1:] * r[:, :-1]).sum() / (r[:, 1:] ** 2).sum()
-    return float(np.sqrt(var)), float(rho)
+def week_step_sd(panel: pd.DataFrame, metric: str) -> float:
+    """SD across stores of the week-to-week change, after removing each week's common shift."""
+    wide = panel[panel.week <= 10].pivot(index="store_id", columns="week", values=metric)
+    steps = wide.diff(axis=1).iloc[:, 1:]
+    steps = steps.sub(steps.mean(axis=0), axis=1)
+    return float(np.sqrt((steps.to_numpy() ** 2).sum() / ((steps.shape[0] - 1) * steps.shape[1])))
+
+
+def calibrate_ar1(placebo_sd: float, step_sd: float):
+    """Find the persistence (rho) and size (sd) of weekly swings that reproduce both measured facts:
+    Var(week step) = 2 sd^2 (1 - rho), and the 5-vs-5 placebo spread. Two facts, two unknowns.
+
+    Why not simply correlate residuals with their previous week? That was tried first. Removing each
+    store's mean over only 10 weeks pushes the correlation far too low, which made the MDE too small."""
+    best = None
+    for rho in np.arange(0.0, 0.96, 0.01):
+        sd = step_sd / np.sqrt(2 * (1 - rho))
+        gap = abs(did_sd_per_store(sd, rho, 5, 5) - placebo_sd)
+        if best is None or gap < best[0]:
+            best = (gap, sd, rho)
+    return float(best[1]), float(best[2])
 
 
 def did_sd_per_store(sd: float, rho: float, pre_weeks: int, post_weeks: int) -> float:
