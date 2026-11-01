@@ -25,8 +25,8 @@ The file ships filled with **simulated** data from scenario S1. Yellow cells are
 
 `reporting/build_tracker.py` writes it with openpyxl, using only IF, OR, AVERAGEIF, COUNTIF and arithmetic, all of which exist in Excel and Google Sheets.
 
-**Verified:** all formulas were recalculated with the independent `formulas` Python library. No formula errors, and Decision returned SCALE, matching the Python rubric.
+**Calculated values:** openpyxl saves formulas with no results, so the build calculates every formula with the `formulas` Python library and stores each result beside its formula. Viewers that do not calculate therefore still show numbers, and the formulas stay live. `tests/test_tracker.py` checks this, and checks the results against the Python rubric and an independent calculation from the raw weekly sums.
 
-**Not verified:** the file has not been opened in Excel or Google Sheets, since neither was available during the build. openpyxl stores formulas without cached results, so a preview that does not calculate (some email or phone viewers) may show blanks. Opening it in Excel or uploading it to Sheets calculates everything.
+**Not verified:** Excel and Google Sheets were not available during the build, so behaviour inside those two applications has not been tested by the build.
 
 The pooled scorecard weights by orders, while the Decision tab's estimate weights stores equally, so the two differ slightly. See `docs/METRICS.md`.

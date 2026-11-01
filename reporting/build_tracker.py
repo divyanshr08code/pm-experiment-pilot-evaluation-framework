@@ -3,8 +3,13 @@
 Only widely supported functions are used (IF, OR, AVERAGEIF, COUNTIF), so the file works
 in both Excel and Google Sheets. Run: python -m reporting.build_tracker
 """
+import html
 import json
+import re
+import zipfile
 
+import formulas
+import numpy as np
 import pandas as pd
 from openpyxl import Workbook
 from openpyxl.formatting.rule import CellIsRule, FormulaRule
@@ -219,7 +224,41 @@ def build(path=ROOT / "outputs" / "pilot_tracker.xlsx"):
 
     path.parent.mkdir(parents=True, exist_ok=True)
     wb.save(path)
+    store_calculated_values(path)
     print("Wrote", path)
+
+
+def store_calculated_values(path):
+    """openpyxl saves formulas with no result, so viewers that do not calculate show blank cells.
+    Calculate every formula with the formulas library and store each result beside its formula.
+    The formulas stay live: Excel and Sheets still recalculate when the file is opened."""
+    solution = formulas.ExcelModel().loads(str(path)).finish().calculate()
+    results = {}
+    for key, ranges in solution.items():
+        match = re.fullmatch(r"'\[[^\]]+\](.+)'!([A-Z]+\d+)", str(key))
+        if match:
+            results[match.group(1).upper(), match.group(2)] = ranges.value[0, 0]
+
+    sheet_names = re.findall(r'<sheet name="([^"]+)"', zipfile.ZipFile(path).read("xl/workbook.xml").decode())
+
+    def with_result(sheet, match):
+        cell, style, formula = match.group(1), match.group(2) or "", match.group(3)
+        value = results[sheet, cell]
+        if isinstance(value, str):
+            return f'<c r="{cell}"{style} t="str"><f>{formula}</f><v>{html.escape(value)}</v></c>'
+        if not isinstance(value, (int, float, np.number)):
+            raise ValueError(f"{sheet}!{cell} calculated to {value!r}")
+        return f'<c r="{cell}"{style}><f>{formula}</f><v>{float(value)!r}</v></c>'
+
+    with zipfile.ZipFile(path) as source:
+        files = {name: source.read(name) for name in source.namelist()}
+    for number, sheet in enumerate(sheet_names, 1):
+        name = f"xl/worksheets/sheet{number}.xml"
+        files[name] = re.sub(r'<c r="([A-Z]+\d+)"( s="\d+")?><f>(.*?)</f><v ?/></c>',
+                             lambda m, s=sheet.upper(): with_result(s, m), files[name].decode()).encode()
+    with zipfile.ZipFile(path, "w", zipfile.ZIP_DEFLATED) as target:
+        for name, data in files.items():
+            target.writestr(name, data)
 
 
 if __name__ == "__main__":
